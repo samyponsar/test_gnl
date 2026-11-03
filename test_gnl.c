@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <unistd.h>
 
 #include "../get_next_line.h"
@@ -105,6 +106,15 @@ void	test_two_fds(void)
 	close(fd2);
 }
 
+/* Milliseconds on a monotonic clock, only ever used as a difference. */
+long	monotonic_ms(void)
+{
+	struct timespec	ts;
+
+	clock_gettime(CLOCK_MONOTONIC, &ts);
+	return ((long)ts.tv_sec * 1000 + ts.tv_nsec / 1000000);
+}
+
 int	main(void)
 {
 	printf("\n");
@@ -127,15 +137,18 @@ int	main(void)
 		{"Binary, 4 NUL bytes", "files/random.bin"},
 	};
 	size_t	i;
+	long	start;
 
 	i = 0;
 	while (i < sizeof(cases) / sizeof(*cases))
 	{
+		start = monotonic_ms();
 		test_differential(&cases[i]);
-		printf("%-24s\tOK\n", cases[i].what);
+		printf("%-24s\tOK %3ld ms\n", cases[i].what, monotonic_ms() - start);
 		i++;
 	}
+	start = monotonic_ms();
 	test_two_fds();
-	printf("%-24s\tOK\n", "Two files, alternating");
+	printf("%-24s\tOK %3ld ms\n", "Two files, alternating", monotonic_ms() - start);
 	return (0);
 }
