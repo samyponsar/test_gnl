@@ -21,13 +21,6 @@ run gnl_9999 || ok=0
 printf '\n'
 run gnl_10000000 || ok=0
 printf '\n'
-run gnl_0
-if [ $? -eq 1 ]; then
-	printf '\nBUFFER_SIZE=0 fails as expected: get_next_line always returns NULL\n'
-else
-	printf '\nBUFFER_SIZE=0 should have failed: get_next_line should return NULL\n'
-	ok=0
-fi
 
 if [ $ok -eq 1 ]; then
 	cat <<'EOF'

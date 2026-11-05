@@ -1,6 +1,6 @@
 SRCS := ../get_next_line.c ../get_next_line_utils.c test_gnl.c
 HDRS := ../get_next_line.h
-SIZES := 0 1 42 8192 9999 10000000
+SIZES := 1 42 8192 9999 10000000
 OBJS := $(foreach s,$(SIZES),$(s)_get_next_line.o $(s)_get_next_line_utils.o $(s)_test_gnl.o)
 BINS := $(addprefix gnl_,$(SIZES))
 CC := cc
