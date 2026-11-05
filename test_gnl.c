@@ -82,6 +82,12 @@ void	check_line(char *gnl, const char *want)
 	free(gnl);
 }
 
+void	test_stdin(void)
+{
+	check_line(get_next_line(0), "line 1\n");
+	check_line(get_next_line(0), "line 2");
+}
+
 /* Two files open at once, calls interleaved: leftovers must never leak from
    one node to the other, and a drained fd must keep returning NULL. */
 void	test_two_fds(void)
@@ -125,16 +131,17 @@ int	main(void)
 		{"Empty file", "files/empty.txt"},
 		{"Single newline", "files/single_newline.txt"},
 		{"Ten empty lines", "files/multiple_newlines.txt"},
-		{"Line without newline", "files/no_newline.txt"},
+		{"No newline", "files/no_newline.txt"},
 		{"Three lines", "files/short.txt"},
 		{"Three lines, no final newline", "files/short2.txt"},
 		{"Windows format (CRLF)", "files/crlf.txt"},
 		{"Line of 8191 bytes", "files/8191.txt"},
 		{"Line of 8192 bytes", "files/8192.txt"},
 		{"Line of 8193 bytes", "files/8193.txt"},
-		{"100 KiB line, no newline", "files/huge_line.txt"},
+		{"100KiB line, no newline", "files/huge_line.txt"},
 		{"Candide de Voltaire", "files/candide.txt"},
-		{"Binary, 4 NUL bytes", "files/random.bin"},
+		{"The Bible", "files/bible.txt"},
+		{"1KiB Binary with NUL bytes", "files/random.bin"},
 	};
 	size_t	i;
 	long	start;
@@ -147,6 +154,9 @@ int	main(void)
 		printf("%-24s\tOK %3ld ms\n", cases[i].what, monotonic_ms() - start);
 		i++;
 	}
+	start = monotonic_ms();
+	test_stdin();
+	printf("%-24s\tOK %3ld ms\n", "Standard input", monotonic_ms() - start);
 	start = monotonic_ms();
 	test_two_fds();
 	printf("%-24s\tOK %3ld ms\n", "Two files, alternating", monotonic_ms() - start);

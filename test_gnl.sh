@@ -3,7 +3,7 @@ make -s
 run()
 {
 	start=$(date +%s%N)
-	./"$1"
+	printf "line 1\nline 2" | ./"$1"
 	status=$?
 	end=$(date +%s%N)
 	printf '\n%24s%7d ms\n' 'Total time:' $(( (end - start) / 1000000 ))
